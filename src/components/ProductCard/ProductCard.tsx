@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Product } from '../../types'
 
 interface ProductCardProps {
@@ -8,6 +8,11 @@ interface ProductCardProps {
 
 export function ProductCard({ product, onAddToCart }: ProductCardProps) {
   const [erroImagem, setErroImagem] = useState(false)
+  const [isMounted, setIsMounted] = useState(false)
+
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
 
   const formattedPrice = product.price.toLocaleString('pt-BR', {
     style: 'currency',
@@ -47,7 +52,7 @@ export function ProductCard({ product, onAddToCart }: ProductCardProps) {
       e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.1)'
     }}
     >
-      {!erroImagem ? (
+      {!erroImagem && isMounted ? (
         <img
           src={product.image}
           alt={product.name}
@@ -60,7 +65,7 @@ export function ProductCard({ product, onAddToCart }: ProductCardProps) {
             marginBottom: '1rem'
           }}
         />
-      ) : (
+      ) : isMounted ? (
         <div style={{
           width: '100%',
           height: '180px',
@@ -73,6 +78,20 @@ export function ProductCard({ product, onAddToCart }: ProductCardProps) {
           fontSize: '3rem'
         }}>
           {obterIconeCategoria(product.category)}
+        </div>
+      ) : (
+        <div style={{
+          width: '100%',
+          height: '180px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          background: '#f0f0f0',
+          borderRadius: '12px',
+          marginBottom: '1rem',
+          fontSize: '3rem'
+        }}>
+          ⏳
         </div>
       )}
 
